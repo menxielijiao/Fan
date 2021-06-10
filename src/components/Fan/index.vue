@@ -2,12 +2,13 @@
   <div id="webgl">
     <div class="nav">
       <ul>
-        <li @click="cEvent(1)">Normal</li>
-        <li @click="cEvent(2)">Color1</li>
-        <li @click="cEvent(3)">Color2</li>
+        <!-- <li @click="cEvent(1)">Stop</li> -->
+        <li @click="cEvent(2)">Normal</li>
+        <li @click="cEvent(3)">Ota</li>
       </ul>
     </div>
     <canvas id="webgl_canvas" ref="canvas"></canvas>
+    <img id="ota-img" src="/img/otaku_otagei.png" style="display:none">
   </div>
 </template>
 <script>

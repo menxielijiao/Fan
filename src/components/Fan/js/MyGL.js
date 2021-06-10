@@ -1,9 +1,9 @@
 import Common from "./Common"
 // import RectLight from "./RectAreaLight"
 import Propeller from "./Propeller"
+// import Ota from "./Ota"
 // import Plane from "./Plane"
 import Stats from "./Stats"
-// import { TWEEN } from './jsm/libs/tween.module.min.js'
 
 export default class MyGL {
 
@@ -14,14 +14,24 @@ export default class MyGL {
   }
 
   init() {
-    Common.init(this.props.$canvas)
-    // this.restLight = new RectLight(0x990094, [0,5,5])
-    this.propeller = new Propeller()
-    this.propeller.init()
-    // this.plane = new Plane()
-    window.addEventListener("resize", this.resize.bind(this))
-    this.stats.init()
-    this.loop()
+    const _this = this
+    const img = document.getElementById('ota-img')
+    img.originSrc = img.src
+    img.src = ''
+    img.addEventListener('load', function() {
+      Common.init(_this.props.$canvas)
+      // this.restLight = new RectLight(0x990094, [0,5,5])
+      // this.plane = new Plane()
+
+      _this.propeller = new Propeller()
+      _this.propeller.init()
+      // this.ota = new Ota()
+      window.addEventListener("resize", _this.resize.bind(_this))
+      _this.stats.init()
+      _this.loop()
+    })
+
+    img.src = img.originSrc
   }
 
   resize(){

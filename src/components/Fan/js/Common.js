@@ -1,4 +1,3 @@
-// https://github.com/mnmxmx/threejs-nuxt-sample/blob/master/components/Artwork/js/Common.js
 import * as THREE from "three"
 
 class Common {
@@ -32,7 +31,7 @@ class Common {
       0.1,
       1000
     );
-    this.camera.position.set(0, 5, -230)
+    this.camera.position.set(0, 5, -400)
     this.camera.lookAt(this.scene.position)
 
     this.renderer = new THREE.WebGLRenderer({
