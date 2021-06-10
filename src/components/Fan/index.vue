@@ -8,7 +8,7 @@
       </ul>
     </div>
     <canvas id="webgl_canvas" ref="canvas"></canvas>
-    <img id="ota-img" src="/img/otaku_otagei.png" style="display:none">
+    <img id="ota-img" src="img/otaku_otagei.png" style="display:none">
   </div>
 </template>
 <script>

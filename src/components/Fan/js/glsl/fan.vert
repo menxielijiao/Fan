@@ -18,7 +18,7 @@ void main() {
   t = time;
   pos = vec3(position.x * clamp(tan(sin(t * 0.1) * 5.0), -5.0, 5.0), position.y * cos(t * 0.3), abs(position.y * 0.05));
   // pos = vec3(position.x * sin(tan(t * 0.1) * 5.0), position.y * cos(t * 0.3), abs(position.y * 0.05));
-  gl_PointSize = 5.0; // 2.5 3.3
+  gl_PointSize = 3.0; // 2.5 3.3
   gl_Position = projectionMatrix * modelViewMatrix * vec4(pos.x, pos.y, pos.z, 1.0);
   // gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }
