@@ -94,7 +94,7 @@ export default class Proppeller {
 
   clickEvent(n) {
     this.check = n
-    console.log(this.group1.rotation.z % (Math.PI * 2))
+    // console.log(this.group1.rotation.z % (Math.PI * 2))
     if(this.check === 1) {
       gsap.to(this.parentGroup.rotation, {
         y: 0,
