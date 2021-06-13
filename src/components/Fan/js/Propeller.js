@@ -3,6 +3,7 @@ import Common from "./Common"
 import Ota from "./Ota"
 import vertixShader from "./glsl/fan.vert"
 import fragmentShader from "./glsl/fan.frag"
+import gsap from "gsap"
 
 export default class Proppeller {
   constructor() {
@@ -12,18 +13,20 @@ export default class Proppeller {
     this.colors = []
     this.otaPosi = []
     this.otaCol = []
-    this.sizeX = 30
+    this.sizeX = 30 // 30
     this.sizeY = 117
     this.parentGroup = new THREE.Group()
     this.group1 = new THREE.Group()
     this.group2 = new THREE.Group()
     this.group3 = new THREE.Group()
     this.uniforms = null
-    this.check = 2
+    this.check = 1
     this.type = null
     this.radius = new THREE.Vector4(0, 0, 0, 0)
 
     this.updateOk = false
+
+    this.count = 0
   }
 
   init() {
@@ -33,6 +36,7 @@ export default class Proppeller {
     this.ota.loadTexture()
     this.otaPosi = this.ota.positions
     this.otaCol = this.ota.colors
+    // this.sizeY = this.ota.imgHeight
 
     this.setMeshObj()
   }
@@ -57,10 +61,12 @@ export default class Proppeller {
   }
 
   update() {
-    // if(!this.updateOk) return false
     switch(this.check) {
       case 1:
-
+        this.group1.rotation.z += Math.PI / 150
+        this.group2.rotation.z += Math.PI / 150
+        this.group3.rotation.z += Math.PI / 150
+        
         break
       case 2:
         this.group1.rotation.z += Math.PI / 12
@@ -78,21 +84,36 @@ export default class Proppeller {
         break
     }
 
-    // this.parentGroup.rotation.y = Math.sin(Common.clock.oldTime / 1000) * Math.PI / 3
     this.uniforms.time.value = Common.time.total
     this.uniforms.time.value = Common.clock.oldTime * 0.001
 
     this.uniforms.radius1.value = this.group1.rotation.z % (Math.PI)
-    // this.judgeRadius()
+
+    this.updateColor()
   }
 
   clickEvent(n) {
     this.check = n
-    console.log(this.group1.rotation.z % (Math.PI))
+    console.log(this.group1.rotation.z % (Math.PI * 2))
+    if(this.check === 1) {
+      gsap.to(this.parentGroup.rotation, {
+        y: 0,
+        duration: 0.5,
+        ease: 'Power3.easeInOut',
+      })
+      this.group1.rotation.z = 0
+      this.group2.rotation.z = Math.PI * 2 / 3 * 1
+      this.group3.rotation.z = Math.PI * 2 / 3 * 2
+      this.uniforms.ota.value = new THREE.Vector4(1, 0, 0, 0)
+    }
     if(this.check === 2) {
       this.group1.rotation.z = 0
       this.group2.rotation.z = Math.PI * 2 / 3 * 1
       this.group3.rotation.z = Math.PI * 2 / 3 * 2
+      this.uniforms.ota.value = new THREE.Vector4(1, 0, 0, 0)
+    }
+    if(this.check === 3) {
+      this.uniforms.ota.value = new THREE.Vector4(0, 1, 0, 0)
     }
   }
 
@@ -100,43 +121,33 @@ export default class Proppeller {
     this.geometry = new THREE.BufferGeometry()
     this.posAttrib = new THREE.Float32BufferAttribute(this.positions, 3)
     this.colAttrib = new THREE.Uint8BufferAttribute(this.colors, 4)
-    // ota
-    // this.otaColorAttrib1 = new THREE.Uint8BufferAttribute(this.ota.color1, 4)
-    // this.otaColorAttrib2 = new THREE.Uint8BufferAttribute(this.ota.color2, 4)
-    // this.otaColorAttrib3 = new THREE.Uint8BufferAttribute(this.ota.color3, 4)
-    // this.otaColorAttrib4 = new THREE.Uint8BufferAttribute(this.ota.color4, 4)
-    // this.otaColorAttrib5 = new THREE.Uint8BufferAttribute(this.ota.color5, 4)
 
     this.colAttrib.normalized = true
     this.geometry.setAttribute('position', this.posAttrib)
     this.geometry.setAttribute('color', this.colAttrib)
-    // ota
-    // this.geometry.setAttribute('otaColor1', this.otaColorAttrib1)
-    // this.geometry.setAttribute('otaColor2', this.otaColorAttrib2)
-    // this.geometry.setAttribute('otaColor3', this.otaColorAttrib3)
-    // this.geometry.setAttribute('otaColor4', this.otaColorAttrib4)
-    // this.geometry.setAttribute('otaColor5', this.otaColorAttrib5)
 
     this.uniforms = {
       time: {
         value: Common.time.total
       },
+      ota: {
+        value: new THREE.Vector4(1, 0, 0, 0)
+      },
       radius1: {
         value: 0
-      },
-      // radius2: {
-      //   value: new THREE.Vector4(0, 0, 0, 0)
-      // }
+      }
     }
     this.material = new THREE.ShaderMaterial({
       uniforms: this.uniforms,
       vertexShader: vertixShader,
       fragmentShader: fragmentShader,
       side: THREE.DoubleSide,
+      // blending: THREE.NormalBlending,
     })
 
     for(let i=0; i<3; i++) {
       this.points = new THREE.Points(this.geometry, this.material)
+      // this.points.position.set(0, 67, -50)
       this.points.position.set(0, 55, -50)
 
       switch(i) {
@@ -156,38 +167,29 @@ export default class Proppeller {
       }
     }
 
-    // Common.scene.add(this.group1)
-    // Common.scene.add(this.group2)
-    // Common.scene.add(this.group3)
     this.parentGroup.add(this.group1)
     this.parentGroup.add(this.group2)
     this.parentGroup.add(this.group3)
     Common.scene.add(this.parentGroup)
-    // this.parentGroup.rotation.x = Math.PI / 5
   }
 
-  judgeRadius() {
-    const z = this.group1.rotation.z % (Math.PI)
-    const r = Math.PI * 5/6
-    if(0 <= z && z < 1 / r) {
-      this.uniforms.radius1.value = new THREE.Vector4(1, 0, 0, 0)
-      this.uniforms.radius2.value = new THREE.Vector4(0, 0, 0, 0)
+  updateColor() {
+    const colArr = this.group1.children[0].geometry.attributes.color.array
+    const r = this.group1.rotation.z
+    const rad = r % (Math.PI * 2)
+    const w = Math.ceil((rad / (Math.PI * 2)) * this.ota.imgWidth)
+
+    for(let i=0; i<this.sizeY; i++) {
+      for(let j=0; j<this.sizeX; j++) {
+        let n = (i * this.ota.imgWidth + w + j) * 4
+  
+        colArr[i * (this.sizeX * 4) + j * 4] = this.ota.imgData[n + 0]
+        colArr[i * (this.sizeX * 4) + j * 4 + 1] = this.ota.imgData[n + 1]
+        colArr[i * (this.sizeX * 4) + j * 4 + 2] = this.ota.imgData[n + 2]
+        colArr[i * (this.sizeX * 4) + j * 4 + 3] = this.ota.imgData[n + 3]
+      }
     }
-    if(1 / r <= z && z < 2 / r) {
-      this.uniforms.radius1.value = new THREE.Vector4(0, 1, 0, 0)
-      this.uniforms.radius2.value = new THREE.Vector4(0, 0, 0, 0)
-    }
-    if(2 / r <= z && z < 3 / r) {
-      this.uniforms.radius1.value = new THREE.Vector4(0, 0, 1, 0)
-      this.uniforms.radius2.value = new THREE.Vector4(0, 0, 0, 0)
-    }
-    if(3 / r <= z && z < 4 / r) {
-      this.uniforms.radius1.value = new THREE.Vector4(0, 0, 0, 1)
-      this.uniforms.radius2.value = new THREE.Vector4(0, 0, 0, 0)
-    }
-    if(4 / r <= z && z < r) {
-      this.uniforms.radius1.value = new THREE.Vector4(0, 0, 0, 0)
-      this.uniforms.radius2.value = new THREE.Vector4(1, 0, 0, 0)
-    }
+
+    this.group1.children[0].geometry.attributes.color.needsUpdate = true
   }
 }

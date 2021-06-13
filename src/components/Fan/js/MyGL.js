@@ -1,7 +1,6 @@
 import Common from "./Common"
 // import RectLight from "./RectAreaLight"
 import Propeller from "./Propeller"
-// import Ota from "./Ota"
 // import Plane from "./Plane"
 import Stats from "./Stats"
 
@@ -25,7 +24,6 @@ export default class MyGL {
 
       _this.propeller = new Propeller()
       _this.propeller.init()
-      // this.ota = new Ota()
       window.addEventListener("resize", _this.resize.bind(_this))
       _this.stats.init()
       _this.loop()

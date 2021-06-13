@@ -5,7 +5,7 @@ import fragmentShader from "./glsl/fan.frag"
 
 export default class Ota {
   constructor() {
-    this.url = "/img/otaku_otagei.png"
+    this.url = "/img/holo.jpg"
     this.positions = []
     this.colors = []
     this.texture = null
@@ -46,8 +46,6 @@ export default class Ota {
         this.colors.push(this.imgData[cg])
         this.colors.push(this.imgData[cb])
         this.colors.push(this.imgData[ca])
-
-        // this.fenbieColors(j, cr, cg, cb, ca)
 
         // position
         const x = j - this.imgWidth / 2
@@ -95,37 +93,4 @@ export default class Ota {
     this.uniforms.time.value = Common.clock.oldTime * 0.001
   }
 
-  fenbieColors(j, cr, cg, cb, ca) {
-    if(0 <= j && j < 30) {
-      this.color1.push(this.imgData[cr])
-      this.color1.push(this.imgData[cg])
-      this.color1.push(this.imgData[cb])
-      this.color1.push(this.imgData[ca])
-    }
-    if(30 <= j && j < 60) {
-      this.color2.push(this.imgData[cr])
-      this.color2.push(this.imgData[cg])
-      this.color2.push(this.imgData[cb])
-      this.color2.push(this.imgData[ca])
-    }
-    if(60 <= j && j < 90) {
-      this.color3.push(this.imgData[cr])
-      this.color3.push(this.imgData[cg])
-      this.color3.push(this.imgData[cb])
-      this.color3.push(this.imgData[ca])
-    }
-    if(90 <= j && j < 120) {
-      this.color4.push(this.imgData[cr])
-      this.color4.push(this.imgData[cg])
-      this.color4.push(this.imgData[cb])
-      this.color4.push(this.imgData[ca])
-    }
-    if(120 <= j && j < 150) {
-      this.color5.push(this.imgData[cr])
-      this.color5.push(this.imgData[cg])
-      this.color5.push(this.imgData[cb])
-      this.color5.push(this.imgData[ca])
-    }
-
-  }
 }
